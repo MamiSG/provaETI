@@ -64,7 +64,7 @@ public class ViagemServiceImpl implements ViagemService {
     }
 
     private Viagem findEntityOrThrow(Long id) {
-        return viagemRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Viagem não encontrada: " + id));
+        return viagemRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("não foi possível encontrar a viagem: " + id));
     }
 
     @Override
@@ -105,6 +105,7 @@ public class ViagemServiceImpl implements ViagemService {
             });
         }
 
+
         Viagem saved = viagemRepo.save(existing);
         return toDTO(saved);
     }
@@ -133,7 +134,7 @@ public class ViagemServiceImpl implements ViagemService {
     public void removeDestino(Long viagemId, Long destinoId) {
         Viagem viagem = findEntityOrThrow(viagemId);
         Optional<Destino> opt = viagem.getDestinos().stream().filter(d -> d.getId().equals(destinoId)).findFirst();
-        if (opt.isEmpty()) throw new EntityNotFoundException("Destino não pertence à viagem ou não existe");
+        if (opt.isEmpty()) throw new EntityNotFoundException("não existe um destino na viage");
         Destino destino = opt.get();
         viagem.removeDestino(destino);
         viagemRepo.save(viagem);

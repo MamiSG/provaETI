@@ -18,13 +18,13 @@ public class Viagem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "O nome é obrigatório")
+    @NotBlank
     private String nome;
 
-    @NotNull(message = "A data de saída é obrigatória")
+    @NotNull
     private LocalDate dataSaida;
 
-    @NotNull(message = "A data de chegada é obrigatória")
+    @NotNull
     private LocalDate dataChegada;
 
     @NotNull

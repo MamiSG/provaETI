@@ -16,7 +16,7 @@ public class Destino {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "O destino é obrigatório")
+    @NotBlank
     private String nomeDestino;
 
     @ManyToOne(fetch = FetchType.LAZY)
