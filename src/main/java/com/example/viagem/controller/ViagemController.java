@@ -1,63 +1,61 @@
 package com.example.viagem.controller;
 
-import com.example.viagem.model.Viagem;
+import com.example.viagem.dto.ViagemDTO;
+import com.example.viagem.dto.DestinoDTO;
+import com.example.viagem.service.ViagemService;
+import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/Viagem")
+@RequestMapping("/api/viagem")
 public class ViagemController {
-    private final com.example.viagem.service.ViagemService viagemService;
-    private final com.example.viagem.repository.ViagemRepository viagemRepository;
 
-    public ViagemController(com.example.viagem.service.ViagemService viagemService, com.example.viagem.repository.ViagemRepository viagemRepository) {
-        this.viagemService = viagemService;
-        this.viagemRepository = viagemRepository;
+    private final ViagemService service;
+
+    public ViagemController(ViagemService service) {
+        this.service = service;
     }
 
     @GetMapping
-    public List<Viagem> listarTodos() {
-        return viagemService.listarTodos();
+    public List<ViagemDTO> all() {
+        return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Viagem> obterPorId(@PathVariable Long id) {
-        Optional<Viagem> viagem = viagemRepository.findById(id);
-        return viagem.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ViagemDTO get(@PathVariable Long id) {
+        return service.findById(id);
     }
 
     @PostMapping
-    public Viagem criar(@RequestBody Viagem viagem) {
-        return viagemRepository.save(viagem);
+    public ResponseEntity<ViagemDTO> create(@Valid @RequestBody ViagemDTO dto) {
+        ViagemDTO created = service.create(dto);
+        return ResponseEntity.ok(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Viagem> atualizar(@PathVariable Long id, @RequestBody Viagem viagemDetalhes) {
-        Optional<Viagem> optionalViagem = viagemRepository.findById(id);
-        if (optionalViagem.isPresent()) {
-            Viagem viagem = optionalViagem.get();
-            viagem.setNome(viagemDetalhes.getNome());
-            viagem.setDataSaida(viagemDetalhes.getDataSaida());
-            viagem.setDataChegada(viagemDetalhes.getDataChegada());
-            viagem.setValor(viagemDetalhes.getValor());
-            Viagem viagemAtualizada = viagemRepository.save(viagem);
-            return ResponseEntity.ok(viagemAtualizada);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ViagemDTO update(@PathVariable Long id, @Valid @RequestBody ViagemDTO dto) {
+        return service.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        if (viagemRepository.existsById(id)) {
-            viagemRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/destinos")
+    public ResponseEntity<DestinoDTO> addDestino(@PathVariable Long id, @Valid @RequestBody DestinoDTO destino) {
+        DestinoDTO created = service.addDestino(id, destino);
+        return ResponseEntity.ok(created);
+    }
+
+    @DeleteMapping("/{id}/destinos/{destId}")
+    public ResponseEntity<Void> removeDestino(@PathVariable Long id, @PathVariable Long destId) {
+        service.removeDestino(id, destId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,28 +1,17 @@
 package com.example.viagem.service;
 
+import com.example.viagem.dto.ViagemDTO;
+import com.example.viagem.dto.DestinoDTO;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
+public interface ViagemService {
+    List<ViagemDTO> findAll();
+    ViagemDTO findById(Long id);
+    ViagemDTO create(ViagemDTO viagem);
+    ViagemDTO update(Long id, ViagemDTO viagem);
+    void delete(Long id);
 
-import com.example.viagem.model.Viagem;
-import com.example.viagem.repository.ViagemRepository;
-
-
-@Service
-public class ViagemService {
-
-    private final ViagemRepository viagemRepository;
-
-    public ViagemService(ViagemRepository viagemRepository) {
-        this.viagemRepository = viagemRepository;
-    }
-
-    public List<Viagem> listarTodos() {
-        return viagemRepository.findAll();
-    }
-
-    public Viagem saveViagem(Viagem viagem) {
-        return viagemRepository.save(viagem);
-    }
+    DestinoDTO addDestino(Long viagemId, DestinoDTO destino);
+    void removeDestino(Long viagemId, Long destinoId);
 
 }
